@@ -1,0 +1,64 @@
+<div id="time"></div>
+<input id="set"></input>
+<div id="confirm"></div>
+<script src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script>
+    //TODO make it look good
+    var moment = moment;
+    var alarms = [];
+    var setField = document.getElementById("set");
+    var now;
+    var alarm;
+    setField.addEventListener("input", function() {
+        now = moment();
+        alarm = moment(setField.value, ["hmma", "Hmm"]);
+        //parse a time from user input
+        //set it to next possible future date
+        //set to tomorrow if current time is past alarm time
+        if (now.isAfter(alarm) > 0) {
+            alarm.add(1, 'day');
+        }
+        //TODO fade in and out text effect?
+        document.getElementById("confirm").innerHTML = "Set alarm for " + alarm.toDate() + " (" + alarm.fromNow() + "?) Press Enter to confirm.";
+        console.log(alarm);
+    });
+    setField.addEventListener("keyup", function(e) {
+        if (e.keyCode == 13) {
+            now = moment();
+            console.log('set alarm!');
+            setField.value = "";
+            var a = setTimeout(startAlarm, alarm.diff(now));
+            alarms.push(a);
+            console.log(a);
+            document.getElementById("confirm").innerHTML = "";
+            //TODO display confirmation message
+            //TODO display current alarms
+        }
+    });
+    startTime();
+
+    function startTime() {
+        var today = new Date();
+        var h = today.getHours();
+        var m = today.getMinutes();
+        var s = today.getSeconds();
+        m = checkTime(m);
+        s = checkTime(s);
+        document.getElementById('time').innerHTML = h + ":" + m + ":" + s;
+        setTimeout(function() {
+            startTime();
+        }, 500);
+    }
+
+    function checkTime(i) {
+        // add zero in front of numbers < 10
+        if (i < 10) {
+            i = "0" + i;
+        }
+        return i;
+    }
+
+    function startAlarm() {
+        //TODO sound file to play
+    }
+</script>
