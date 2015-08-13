@@ -1,26 +1,67 @@
-<div id="time"></div>
-<input id="set"></input>
-<div id="confirm"></div>
-<script src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<head>
+    <link rel="stylesheet" href="//bootswatch.com/slate/bootstrap.min.css"></link>
+    <style>
+        .big {
+            font-size: 200px;
+        }
+        
+        .label {
+            font-size: 30px;
+            margin: 3px;
+        }
+        
+        #confirm {
+            visibility: hidden;
+            margin: 1em;
+        }
+        
+        .alarm {
+            text-shadow: 0px 0px 75px #FFFF00;
+        }
+    </style>
+    <script src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+</head>
+
+<body>
+    <div class="container text-center">
+        <div class="big" id="time"></div>
+        <input class="form-control input-lg" id="set" placeholder="Type an alarm time!  8a, 9:15pm, etc..."></input>
+        <div id="confirm"> <span class="label label-success">
+            <i class="glyphicon glyphicon-bell"></i>
+                <span id="alarmTime"></span> </span> <span class="label label-info">
+            <i class="glyphicon glyphicon-time"></i>
+        <span id="fromNow"></span> </span> <span id="enter" class="label label-default">
+                Press Enter to confirm.
+        </span> </div>
+    </div>
+</body>
 <script>
-    //TODO make it look good
     var moment = moment;
-    var alarms = [];
     var setField = document.getElementById("set");
     var now;
     var alarm;
+    var alarmSound = new Audio("goodmorning.mp3");
     setField.addEventListener("input", function() {
+        var tomorrow = false;
         now = moment();
         alarm = moment(setField.value, ["hmma", "Hmm"]);
-        //parse a time from user input
-        //set it to next possible future date
-        //set to tomorrow if current time is past alarm time
-        if (now.isAfter(alarm) > 0) {
-            alarm.add(1, 'day');
-        }
-        //TODO fade in and out text effect?
-        document.getElementById("confirm").innerHTML = "Set alarm for " + alarm.toDate() + " (" + alarm.fromNow() + "?) Press Enter to confirm.";
         console.log(alarm);
+        if (alarm.isValid()) {
+            //parse a time from user input
+            //set it to next possible future date
+            //set to tomorrow if current time is past alarm time
+            if (now.isAfter(alarm) > 0) {
+                alarm.add(1, 'day');
+                tomorrow = true;
+            }
+            document.getElementById("confirm").style.visibility = "visible";
+            document.getElementById("alarmTime").innerHTML = alarm.format("h:mm a") + (tomorrow ? " tomorrow" : "");
+            document.getElementById("fromNow").innerHTML = alarm.fromNow();
+        }
+        else {
+            //hide alarm confirm
+            document.getElementById("confirm").style.visibility = "hidden";
+        }
     });
     setField.addEventListener("keyup", function(e) {
         if (e.keyCode == 13) {
@@ -28,37 +69,29 @@
             console.log('set alarm!');
             setField.value = "";
             var a = setTimeout(startAlarm, alarm.diff(now));
-            alarms.push(a);
             console.log(a);
-            document.getElementById("confirm").innerHTML = "";
-            //TODO display confirmation message
-            //TODO display current alarms
+            document.getElementById("set").remove();
+            document.getElementById("enter").remove();
         }
     });
     startTime();
 
     function startTime() {
-        var today = new Date();
-        var h = today.getHours();
-        var m = today.getMinutes();
-        var s = today.getSeconds();
-        m = checkTime(m);
-        s = checkTime(s);
-        document.getElementById('time').innerHTML = h + ":" + m + ":" + s;
+        var clock = moment();
+        document.getElementById('time').innerHTML = clock.format("h:mm:ss a");
+        if (alarm) {
+            document.getElementById("fromNow").innerHTML = alarm.fromNow();
+        }
         setTimeout(function() {
             startTime();
         }, 500);
     }
 
-    function checkTime(i) {
-        // add zero in front of numbers < 10
-        if (i < 10) {
-            i = "0" + i;
-        }
-        return i;
-    }
-
     function startAlarm() {
-        //TODO sound file to play
+        document.getElementById("time").className += " alarm";
+        //TODO visual display when alarm is playing
+        //text-shadow on clock with varying radius
+        alarmSound.loop = true;
+        alarmSound.play();
     }
 </script>
