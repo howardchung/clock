@@ -1,7 +1,8 @@
+<!doctype html>
 <html>
 <head>
-    <link rel="stylesheet" href="//bootswatch.com/slate/bootstrap.min.css"></link>
-    <style>
+    <link rel="stylesheet" href="//bootswatch.com/slate/bootstrap.min.css">
+    <style type="text/css">
         .big {
             font-size: 200px;
         }
@@ -20,20 +21,26 @@
             text-shadow: 0px 0px 75px #FFFF00;
         }
     </style>
-    <script src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
 </head>
 
 <body>
     <div class="container text-center">
         <div class="big" id="time"></div>
-        <input class="form-control input-lg" id="set" placeholder="Type an alarm time!  8a, 9:15pm, etc..."></input>
-        <div id="confirm"> <span class="label label-success">
+        <input class="form-control input-lg" id="set" placeholder="Type an alarm time!  8a, 9:15pm, etc...">
+        <div id="confirm"> 
+        <span class="label label-success">
             <i class="glyphicon glyphicon-bell"></i>
-                <span id="alarmTime"></span> </span> <span class="label label-info">
+            <span id="alarmTime"></span> 
+        </span> 
+        <span class="label label-info">
             <i class="glyphicon glyphicon-time"></i>
-        <span id="fromNow"></span> </span> <span id="enter" class="label label-default">
-                Press Enter to confirm.
-        </span> </div>
+            <span id="fromNow"></span> 
+        </span>
+        <span id="enter" class="label label-default">
+            Press Enter to confirm.
+        </span> 
+        </div>
     </div>
 </body>
 <script>
