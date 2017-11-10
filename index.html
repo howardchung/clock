@@ -53,7 +53,6 @@
         var tomorrow = false;
         now = moment();
         alarm = moment(setField.value, ["hmma", "Hmm"]);
-        console.log(alarm);
         if (alarm.isValid()) {
             //parse a time from user input
             //set it to next possible future date
@@ -72,12 +71,10 @@
         }
     });
     setField.addEventListener("keyup", function(e) {
-        if (e.keyCode == 13) {
+        if (e.keyCode == 13 && alarm && alarm.isValid()) {
             now = moment();
-            console.log('set alarm!');
             setField.value = "";
             var a = setTimeout(startAlarm, alarm.diff(now));
-            console.log(a);
             document.getElementById("set").remove();
             document.getElementById("enter").remove();
         }
