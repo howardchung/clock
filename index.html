@@ -1,23 +1,28 @@
 <!doctype html>
 <html>
+
 <head>
-    <title>Clock</title>
+    <title>The One Alarm Clock To Rule Them All</title>
+    <meta name="keywords" content="alarm,clock">
     <link rel="stylesheet" href="//bootswatch.com/4/slate/bootstrap.min.css">
+
     <style type="text/css">
-        .big {
-            font-size: 200px;
-        }
-        
-        .label {
-            font-size: 30px;
-            margin: 3px;
-        }
-        
         #confirm {
             visibility: hidden;
             margin: 1em;
+            font-size: 28px;
         }
-        
+
+        .parent {
+            min-height: 100%;
+            /* Fallback for browsers do NOT support vh unit */
+            min-height: 100vh;
+            /* These two lines are counted as one :-)       */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
         .alarm {
             text-shadow: 0px 0px 75px #FFFF00;
         }
@@ -26,77 +31,80 @@
 </head>
 
 <body>
-    <div class="container text-center">
-        <div class="big" id="time"></div>
-        <input class="form-control input-lg" id="set" placeholder="Type an alarm time!  8a, 9:15pm, etc...">
-        <div id="confirm"> 
-        <span class="label label-success">
-            <i class="glyphicon glyphicon-bell"></i>
-            <span id="alarmTime"></span> 
-        </span> 
-        <span class="label label-info">
-            <i class="glyphicon glyphicon-time"></i>
-            <span id="fromNow"></span> 
-        </span>
-        <span id="enter" class="label label-default">
-            Press Enter to confirm.
-        </span> 
+    <div class="parent">
+        <div style="text-align:center;">
+            <div style="font-size: 200px;" id="time"></div>
+            <input class="form-control" id="set" placeholder="Type an alarm time!  8a, 9:15pm, etc...">
+            <div id="confirm">
+                <span id="alarmTime" class="badge badge-pill badge-success"></span>
+                <span id="fromNow" class="badge badge-pill badge-info"></span>
+                <span id="enter" class="badge badge-pill badge-warning">
+                    Press Enter to confirm.
+                </span>
+                <div>
+                    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+                    <!-- banner -->
+                    <ins class="adsbygoogle" style="display:inline-block;width:728px;height:90px" data-ad-client="ca-pub-5591574346816667" data-ad-slot="1629378389"></ins>
+                    <script>
+                        (adsbygoogle = window.adsbygoogle || []).push({});
+                    </script>
+                </div>
+            </div>
         </div>
     </div>
     <script>
-    var moment = moment;
-    var setField = document.getElementById("set");
-    var now;
-    var alarm;
-    var alarmSound = new Audio("goodmorning.mp3");
-    setField.addEventListener("input", function() {
-        var tomorrow = false;
-        now = moment();
-        alarm = moment(setField.value, ["hmma", "Hmm"]);
-        if (alarm.isValid()) {
-            //parse a time from user input
-            //set it to next possible future date
-            //set to tomorrow if current time is past alarm time
-            if (now.isAfter(alarm) > 0) {
-                alarm.add(1, 'day');
-                tomorrow = true;
-            }
-            document.getElementById("confirm").style.visibility = "visible";
-            document.getElementById("alarmTime").innerHTML = alarm.format("h:mm a") + (tomorrow ? " tomorrow" : "");
-            document.getElementById("fromNow").innerHTML = alarm.fromNow();
-        }
-        else {
-            //hide alarm confirm
-            document.getElementById("confirm").style.visibility = "hidden";
-        }
-    });
-    setField.addEventListener("keyup", function(e) {
-        if (e.keyCode == 13 && alarm && alarm.isValid()) {
+        var moment = window.moment;
+        var setField = document.getElementById("set");
+        var now;
+        var alarm;
+        var alarmSound = new Audio("goodmorning.mp3");
+
+        function handleInput() {
+            var tomorrow = false;
             now = moment();
-            setField.value = "";
-            var a = setTimeout(startAlarm, alarm.diff(now));
-            document.getElementById("set").remove();
-            document.getElementById("enter").remove();
+            alarm = moment(setField.value, ["ha", "hmma", "Hmm", "h:mma", "H:mm"]);
+            if (alarm.isValid()) {
+                //parse a time from user input
+                //set it to next possible future date
+                //set to tomorrow if current time is past alarm time
+                if (now.isAfter(alarm) > 0) {
+                    alarm.add(1, 'day');
+                    tomorrow = true;
+                }
+                document.getElementById("confirm").style.visibility = "visible";
+                document.getElementById("alarmTime").innerHTML = alarm.format("h:mm a") + (tomorrow ? " tomorrow" : "");
+                document.getElementById("fromNow").innerHTML = alarm.fromNow();
+            }
+            else {
+                //hide alarm confirm
+                document.getElementById("confirm").style.visibility = "hidden";
+            }
         }
-    });
-    startTime();
 
-    function startTime() {
-        var clock = moment();
-        document.getElementById('time').innerHTML = clock.format("h:mm:ss a");
-        if (alarm) {
-            document.getElementById("fromNow").innerHTML = alarm.fromNow();
+        function setAlarm(e) {
+            if (e.keyCode == 13 && alarm && alarm.isValid()) {
+                now = moment();
+                setField.value = "";
+                setTimeout(startAlarm, alarm.diff(now));
+                document.getElementById("set").remove();
+                document.getElementById("enter").innerHTML = 'Alarm set!';
+            }
         }
-        setTimeout(function() {
-            startTime();
+
+        function startAlarm() {
+            document.getElementById("time").className += " alarm";
+            alarmSound.loop = true;
+            alarmSound.play();
+        }
+
+        setField.oninput = handleInput;
+        setField.onkeypress = setAlarm;
+
+        setInterval(function() {
+            var clock = moment();
+            document.getElementById('time').innerHTML = clock.format("h:mm:ss a");
         }, 500);
-    }
-
-    function startAlarm() {
-        document.getElementById("time").className += " alarm";
-        alarmSound.loop = true;
-        alarmSound.play();
-    }
-</script>
+    </script>
 </body>
+
 </html>
